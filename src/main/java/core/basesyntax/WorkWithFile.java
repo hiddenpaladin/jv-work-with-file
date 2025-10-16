@@ -13,10 +13,11 @@ public class WorkWithFile {
     private static final String DELIMITER = ",";
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
-    public void getStatistic(String fromFileName, String toFileName) {
+    public String getStatistic(String fromFileName, String toFileName) {
         int[] totals = readTotals(fromFileName);
         String report = buildReport(totals[0],totals[1]);
         writeToFile(toFileName,report);
+        return report;
     }
 
     private int[] readTotals(String fromFileName) {
@@ -45,11 +46,13 @@ public class WorkWithFile {
         }
     }
 
-    private String buildReport(int supply,int buy) {
+    private String buildReport(int supply, int buy) {
         int result = supply - buy;
-        return "supply," + supply + LINE_SEPARATOR
-                + "buy," + buy + LINE_SEPARATOR
-                + "result," + result;
+        StringBuilder report = new StringBuilder();
+        report.append("supply,").append(supply).append(LINE_SEPARATOR)
+                .append("buy,").append(buy).append(LINE_SEPARATOR)
+                .append("result,").append(result);
+        return report.toString();
     }
 
     private void writeToFile(String toFileName, String content) {
