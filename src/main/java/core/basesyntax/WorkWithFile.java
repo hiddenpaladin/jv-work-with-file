@@ -15,16 +15,13 @@ public class WorkWithFile {
     int supplyTotal = 0;
     int buyTotal = 0;
 
-    private static String buildReportString(int supply, int buy) {
-        int result = supply - buy;
-        return "supply," + supply + LINE_SEPARATOR +
-                "buy," + buy + LINE_SEPARATOR +
-                "result," + result;
-    }
-
-    public String getStatistic(String fromFileName) {
-        supplyTotal = 0;
-        buyTotal = 0;
+    public void getStatistic(String fromFileName, String toFileName) {
+        int[] totals = readTotals(fromFileName);
+        String report = buildReport(totals[0],totals[1]);
+        writeToFile(toFileName,report);
+         //
+         //
+        private int[] readTotals(String fromFileName) {
         try (BufferedReader reader = new BufferedReader(new FileReader(fromFileName))) {
             String value = reader.readLine();
             while (value != null) {
@@ -40,19 +37,26 @@ public class WorkWithFile {
                 }
                 value = reader.readLine();
             }
-            return buildReportString(supplyTotal, buyTotal);
+            return new int[] {supplyTotal,buyTotal};
         } catch (IOException e) {
             throw new RuntimeException("Failed to read input file: " + fromFileName, e);
         } catch (NumberFormatException e) {
             throw new RuntimeException("Failed to parse number in file: " + fromFileName, e);
         }
-    }
+        }
+        private String buildReportString(int suply,int buy) {
+            int result = supply - buy;
+            return "supply," + supply + LINE_SEPARATOR +
+                    "buy," + buy + LINE_SEPARATOR +
+                    "result," + result;
+        }
 
-    private void writeReport(String toFileName, String report) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(toFileName))) {
-            writer.write(buildReportString(supplyTotal, buyTotal));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to write to file: " + toFileName, e);
+        private void writeReport(String toFileName, String content) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(toFileName))) {
+                writer.write(content);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to write to file: " + toFileName, e);
+            }
         }
     }
 }
